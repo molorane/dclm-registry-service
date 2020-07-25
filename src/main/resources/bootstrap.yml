@@ -1,0 +1,72 @@
+
+# Shared across all profiles
+spring:
+  application:
+    name: dclm-registry-service #name of the application
+  cloud:
+    config:
+      fail-fast: true #the service will not run if it can't reach the config-service
+      password: 1234 #password of the config-service
+      username: user #username of the config-service
+
+      #     Specify configuration details for retrying connection to the config-server service
+      retry:
+        initial-interval: 5000
+        max-attempts: 10
+
+eureka:
+  instance:
+    prefer-ip-address: true #when the application registers with eureka, it uses its IP address rather than its hostname
+  client:
+    registerWithEureka: false #tells the built-in eureka client to not register itself with eureka, because we should act as a server
+    fetchRegistry: false
+
+---
+
+# Docker profile configuration
+spring:
+  profiles: docker
+  cloud:
+    config:
+      #      URI for when running locally using Docker
+      uri: http://config-service:8080/config-service
+
+---
+
+# Local profile configuration
+spring:
+  profiles: local
+  cloud:
+    config:
+      #      URI for when running locally
+      uri: http://localhost:8888
+
+---
+
+# Dev profile configuration
+spring:
+  profiles: dev
+  cloud:
+    config:
+      #      URI for when running locally
+      uri: http://config-service-prod.default.svc.cluster.local:8080/config-service
+
+---
+
+# QA profile configuration
+spring:
+  profiles: qa
+  cloud:
+    config:
+      #      URI for when running on the microk8s cluster
+      uri: http://config-service-prod.default.svc.cluster.local:8080/config-service
+
+---
+
+# Production profile configuration
+spring:
+  profiles: prd
+  cloud:
+    config:
+      #      URI for when running on the microk8s cluster
+      uri: http://config-service-prod.default.svc.cluster.local:8080/config-service
